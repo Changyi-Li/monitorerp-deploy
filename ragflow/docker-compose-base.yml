@@ -10,7 +10,7 @@ services:
     tmpfs:
       - /tmp:mode=1777,size=512m
     ports:
-      - ${ES_PORT}:9200
+      - 127.0.0.1:${ES_PORT}:9200
     env_file: .env
     environment:
       - node.name=es01
@@ -44,7 +44,7 @@ services:
     volumes:
       - osdata01:/usr/share/opensearch/data
     ports:
-      - ${OS_PORT}:9201
+      - 127.0.0.1:${OS_PORT}:9201
     env_file: .env
     environment:
       - node.name=opensearch01
@@ -82,9 +82,9 @@ services:
       - ./infinity_conf.toml:/infinity_conf.toml
     command: ["-f", "/infinity_conf.toml"]
     ports:
-      - ${INFINITY_THRIFT_PORT}:23817
-      - ${INFINITY_HTTP_PORT}:23820
-      - ${INFINITY_PSQL_PORT}:5432
+      - 127.0.0.1:${INFINITY_THRIFT_PORT}:23817
+      - 127.0.0.1:${INFINITY_HTTP_PORT}:23820
+      - 127.0.0.1:${INFINITY_PSQL_PORT}:5432
     env_file: .env
     mem_limit: ${MEM_LIMIT}
     ulimits:
@@ -115,7 +115,7 @@ services:
       - ./oceanbase/init.d:/root/boot/init.d
       - ./oceanbase-entrypoint.sh:/root/boot/ragflow-oceanbase-entrypoint.sh:ro
     ports:
-      - ${OCEANBASE_PORT:-2881}:2881
+      - 127.0.0.1:${OCEANBASE_PORT:-2881}:2881
     env_file: .env
     environment:
       - MODE=normal
@@ -139,7 +139,7 @@ services:
     volumes:
       - ./seekdb:/var/lib/oceanbase
     ports:
-      - ${SEEKDB_PORT:-2881}:2881
+      - 127.0.0.1:${SEEKDB_PORT:-2881}:2881
     env_file: .env
     environment:
       - ROOT_PASSWORD=${SEEKDB_PASSWORD:-infini_rag_flow}
@@ -161,7 +161,7 @@ services:
     image: ${SANDBOX_EXECUTOR_MANAGER_IMAGE-infiniflow/sandbox-executor-manager:latest}
     privileged: true
     ports:
-      - ${SANDBOX_EXECUTOR_MANAGER_PORT-9385}:9385
+      - 127.0.0.1:${SANDBOX_EXECUTOR_MANAGER_PORT-9385}:9385
     env_file: .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -198,7 +198,7 @@ services:
       --init-file /data/application/init.sql
       --binlog_expire_logs_seconds=604800
     ports:
-      - ${EXPOSE_MYSQL_PORT}:3306
+      - 127.0.0.1:${EXPOSE_MYSQL_PORT}:3306
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/data/application/init.sql
@@ -215,8 +215,8 @@ services:
     image: pgsty/minio:RELEASE.2026-03-25T00-00-00Z
     command: ["server", "--console-address", ":9001", "/data"]
     ports:
-      - ${MINIO_PORT}:9000
-      - ${MINIO_CONSOLE_PORT}:9001
+      - 127.0.0.1:${MINIO_PORT}:9000
+      - 127.0.0.1:${MINIO_CONSOLE_PORT}:9001
     env_file: .env
     environment:
       - MINIO_ROOT_USER=${MINIO_USER}
@@ -238,7 +238,7 @@ services:
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
     env_file: .env
     ports:
-      - ${REDIS_PORT}:6379
+      - 127.0.0.1:${REDIS_PORT}:6379
     volumes:
       - redis_data:/data
     networks:
@@ -255,8 +255,8 @@ services:
       - ragflow-go
     image: nats:2.14.2
     ports:
-      - ${NATS_PORT}:4222
-      - "8222:8222"
+      - 127.0.0.1:${NATS_PORT}:4222
+      - "127.0.0.1:8222:8222"
     volumes:
       - nats_data:/data
     command: -js -sd /data
@@ -276,7 +276,7 @@ services:
     image: ${TEI_IMAGE_CPU}
     hostname: tei
     ports:
-      - ${TEI_PORT-6380}:80
+      - 127.0.0.1:${TEI_PORT-6380}:80
     env_file: .env
     networks:
       - ragflow
@@ -290,7 +290,7 @@ services:
     image: ${TEI_IMAGE_GPU}
     hostname: tei
     ports:
-      - ${TEI_PORT-6380}:80
+      - 127.0.0.1:${TEI_PORT-6380}:80
     env_file: .env
     networks:
       - ragflow
@@ -310,7 +310,7 @@ services:
       - kibana
     image: kibana:${STACK_VERSION}
     ports:
-      - ${KIBANA_PORT-5601}:5601
+      - 127.0.0.1:${KIBANA_PORT-5601}:5601
     env_file: .env
     volumes:
       - kibana_data:/usr/share/kibana/data
