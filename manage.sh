@@ -38,7 +38,7 @@ case "$cmd" in
 
     echo
     echo "All services started."
-    echo "  RAGFlow:  http://<server-ip>/  or  http://ai.ragflow.monitorsystem.cn/  (via nginx :80)"
+    echo "  RAGFlow:  http://<server-ip>/  or  http://ragflow.ai.monitorsystem.cn/  (via nginx :80)"
     echo "  nginx:    global reverse proxy on :80"
     ;;
 
