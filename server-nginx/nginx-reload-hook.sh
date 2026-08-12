@@ -11,4 +11,4 @@
 # certbot (snap) runs all executable files in renewal-hooks/deploy/ after
 # each successful renewal. Reload is a no-op for certs that did not change.
 
-docker exec server-nginx-nginx-1 nginx -s reload 2>/dev/null || true
+docker exec server-nginx nginx -s reload 2>/dev/null || true
