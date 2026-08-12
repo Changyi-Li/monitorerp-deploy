@@ -8,7 +8,7 @@
 .DESCRIPTION
   Ships exactly the images the default deploy needs:
     infiniflow/ragflow:v0.26.4, elasticsearch:8.11.3, mysql:8.0.39,
-    pgsty/minio:RELEASE.2026-03-25T00-00-00Z, valkey/valkey:8, nginx.
+    pgsty/minio:RELEASE.2026-03-25T00-00-00Z, valkey/valkey:8, postgres:17, nginx.
   Skips any image that is already present on the server (idempotent / resumable).
   Cleans up the tars on both sides after each image loads.
 
@@ -52,6 +52,7 @@ $Images = @(
     "pgsty/minio:RELEASE.2026-03-25T00-00-00Z",
     "valkey/valkey:8",
     "nginx",
+    "postgres:17",
     "infiniflow/ragflow:v0.26.4"
 )
 
