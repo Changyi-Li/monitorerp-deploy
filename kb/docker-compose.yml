@@ -1,0 +1,54 @@
+# MonitorERP-KB app stack: api (unpublished) + web (127.0.0.1:4800 only).
+#
+# Images come from GHCR as public images (no pull auth) and are shipped by
+# ship-images.ps1 on the Windows box — the server never talks to GitHub or
+# GHCR. KB_TAG is interpolated from kb/.env (the compose project env file),
+# which the relay updates on every release and bootstrap.sh creates on first
+# init. Bump the tag for a release, flip it back to roll back.
+#
+# The API listens on :4801 inside the compose network only — zero published
+# ports. nginx (server-nginx/global.conf) is the only route to the app: it
+# proxies kb.ai.monitorsystem.cn -> http://127.0.0.1:4800.
+#
+# Migrations + super-admin seed run on API boot — nothing else needed here.
+
+services:
+  api:
+    image: ghcr.io/changyi-li/kb-api:${KB_TAG}
+    container_name: kb-api
+    restart: unless-stopped
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4801/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - kb
+
+  web:
+    image: ghcr.io/changyi-li/kb-web:${KB_TAG}
+    container_name: kb-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      # Browser only ever talks to the web origin; next rewrites /api/* to here.
+      - API_ORIGIN=http://api:4801
+      # next start honours PORT; keep the container port locked to the contract.
+      - PORT=4800
+    ports:
+      - "127.0.0.1:4800:4800"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4800/auth/sign-in').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - kb
+
+networks:
+  kb:

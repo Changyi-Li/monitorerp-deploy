@@ -12,6 +12,9 @@
   Skips any image that is already present on the server (idempotent / resumable).
   Cleans up the tars on both sides after each image loads.
 
+  The MonitorERP-KB app images are shipped by ship-kb-images.ps1 — run that
+  separately per release.
+
 .EXAMPLE
   .\ship-images.ps1
 
