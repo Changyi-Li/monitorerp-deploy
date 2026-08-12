@@ -2,6 +2,12 @@
 
 Server: monitor-server3 (101.132.20.133), repo at `~/src/monitorerp-deploy`.
 
+## 连接到服务器
+
+```bash
+ssh root@101.132.20.133
+```
+
 ## 推送镜像到服务器（Windows 本地执行）
 
 ```powershell
