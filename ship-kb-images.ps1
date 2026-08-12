@@ -170,14 +170,14 @@ if ($failures.Count -gt 0) {
 Write-Host "`n=== Deploying MonitorERP-KB (KB_TAG=$Tag) ==="
 
 $kbEnv = "$RemoteDeployDir/kb/.env"
-$hasEnv = ssh -o BatchMode=yes $Server "test -f '$kbEnv' && echo yes || echo no"
+$hasEnv = ssh -o BatchMode=yes $Server "test -f $kbEnv && echo yes || echo no"
 if ($hasEnv -notmatch "yes") {
     Write-Error "$kbEnv not found on the server — run kb/bootstrap.sh there first (interactive, writes the admin password once). Images are shipped; deploy aborted."
     exit 1
 }
 
 # 1. write KB_TAG (tag values are semver — no slash; sed is safe)
-$setTag = "grep -q '^KB_TAG=' '$kbEnv' && sed -i 's|^KB_TAG=.*|KB_TAG=$Tag|' '$kbEnv' || echo 'KB_TAG=$Tag' >> '$kbEnv'"
+$setTag = "grep -q '^KB_TAG=' $kbEnv && sed -i 's|^KB_TAG=.*|KB_TAG=$Tag|' $kbEnv || echo 'KB_TAG=$Tag' >> $kbEnv"
 if (-not (Invoke-Remote $setTag)) {
     Write-Error "Failed to set KB_TAG in $kbEnv"
     exit 1
