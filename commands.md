@@ -24,6 +24,14 @@ cd ~/src/monitorerp-deploy
 ./manage.sh logs    # 跟随查看所有日志
 ```
 
+## Postgres 首次初始化（服务器上执行）
+
+```bash
+cd ~/src/monitorerp-deploy && ./postgres/bootstrap.sh
+```
+
+生成随机密码写入 `postgres/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
+
 ## nginx 配置更新后强制重建（服务器上执行）
 
 ```bash
