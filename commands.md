@@ -14,6 +14,7 @@ ssh root@101.132.20.133
 # PowerShell
 .\ship-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images                        # 仅基础设施镜像
 .\ship-kb-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images -Tag v1.2.3         # KB 应用镜像 + 部署 KB 栈
+.\ship-keycloak-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images               # Keycloak 镜像 + 部署 Keycloak 栈
 ```
 
 ## 启动 / 停止 / 查看全部服务（服务器上执行）
