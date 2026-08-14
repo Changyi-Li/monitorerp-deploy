@@ -34,6 +34,15 @@ cd ~/src/monitorerp-deploy && ./postgres/bootstrap.sh
 
 生成随机密码写入 `postgres/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
 
+## Keycloak 首次初始化（服务器上执行）
+
+```bash
+cd ~/src/monitorerp-deploy && ./keycloak/bootstrap.sh
+```
+
+生成随机 admin 密码写入 `keycloak/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
+控制台：http://127.0.0.1:8081（admin / 密码见 `keycloak/.env`）。注意 `KC_BOOTSTRAP_ADMIN_*` 仅在首次启动时生效，之后改 `.env` 不会改 admin 密码。
+
 ## KB 首次初始化（服务器上执行，交互式）
 
 ```bash
