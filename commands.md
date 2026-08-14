@@ -32,8 +32,6 @@ cd ~/src/monitorerp-deploy
 cd ~/src/monitorerp-deploy && ./postgres/bootstrap.sh
 ```
 
-生成随机密码写入 `postgres/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
-
 ## KB 首次初始化（服务器上执行，交互式）
 
 ```bash

@@ -354,3 +354,6 @@ volumes:
 networks:
   ragflow:
     driver: bridge
+  shared:
+    external: true
+    name: monitorerp-shared

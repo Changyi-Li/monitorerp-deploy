@@ -25,6 +25,10 @@ else
   echo "$ENV_FILE already exists — leaving it untouched."
 fi
 
+if ! docker network inspect monitorerp-shared >/dev/null 2>&1; then
+  docker network create monitorerp-shared
+fi
+
 (cd "$SCRIPT_DIR" && docker compose up -d)
 echo
 echo "Postgres is starting. See status with: ./manage.sh status"

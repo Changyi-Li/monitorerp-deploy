@@ -70,7 +70,7 @@ case "$cmd" in
 
     echo
     echo "All services started."
-    echo "  Postgres: 127.0.0.1:5432 (containers reach it via host.docker.internal:5432)"
+    echo "  Postgres: 127.0.0.1:5432 (containers reach it by name on the monitorerp-shared network)"
     echo "  RAGFlow:  http://<server-ip>/  or  https://ragflow.ai.monitorsystem.cn/  (via nginx)"
     echo "  KB web:   https://kb.ai.monitorsystem.cn/  (via nginx, once the cert is issued)"
     echo "  nginx:    global reverse proxy on :80"
