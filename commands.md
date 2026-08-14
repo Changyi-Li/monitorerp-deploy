@@ -14,6 +14,7 @@ ssh root@101.132.20.133
 # PowerShell
 .\ship-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images                        # 仅基础设施镜像
 .\ship-kb-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images -Tag v1.2.3         # KB 应用镜像 + 部署 KB 栈
+.\ship-keycloak-images.ps1 -Server root@101.132.20.133 -RemoteDir /root/images               # Keycloak 镜像 + 部署 Keycloak 栈
 ```
 
 ## 启动 / 停止 / 查看全部服务（服务器上执行）
@@ -32,6 +33,14 @@ cd ~/src/monitorerp-deploy
 cd ~/src/monitorerp-deploy && ./postgres/bootstrap.sh
 ```
 
+## Keycloak 首次初始化（服务器上执行）
+
+```bash
+cd ~/src/monitorerp-deploy && ./keycloak/bootstrap.sh
+```
+
+生成随机 admin 密码写入 `keycloak/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
+控制台：http://127.0.0.1:8081（admin / 密码见 `keycloak/.env`）。注意 `KC_BOOTSTRAP_ADMIN_*` 仅在首次启动时生效，之后改 `.env` 不会改 admin 密码。
 ## KB 首次初始化（服务器上执行，交互式）
 
 ```bash
