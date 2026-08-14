@@ -7,4 +7,6 @@ services:
     ports:
       # 8080 is RAGFlow's web port (ragflow/.env SVR_WEB_HTTP_PORT) — use 8081
       - "127.0.0.1:8081:8080"
-    command: start-dev --proxy-headers=xforwarded --health-enabled=true
+    # health on the main interface (not the default management :9000 — host 9000
+    # is taken), so ship-keycloak-images.ps1 can probe 127.0.0.1:8081/health/ready
+    command: start-dev --proxy-headers=xforwarded --health-enabled=true --http-management-health-enabled=false
