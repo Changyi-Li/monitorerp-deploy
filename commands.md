@@ -21,7 +21,7 @@ ssh root@101.132.20.133
 
 ```bash
 cd ~/src/monitorerp-deploy
-./manage.sh up      # 启动 Postgres + RAGFlow + KB + nginx（默认）
+./manage.sh up      # 启动 Postgres + Keycloak + RAGFlow + KB + nginx（默认）
 ./manage.sh down    # 全部停止
 ./manage.sh status  # 查看各栈状态
 ./manage.sh logs    # 跟随查看所有日志
@@ -39,8 +39,16 @@ cd ~/src/monitorerp-deploy && ./postgres/bootstrap.sh
 cd ~/src/monitorerp-deploy && ./keycloak/bootstrap.sh
 ```
 
-生成随机 admin 密码写入 `keycloak/.env`（gitignored），随后启动容器；`.env` 已存在时跳过。
-控制台：http://127.0.0.1:8081（admin / 密码见 `keycloak/.env`）。注意 `KC_BOOTSTRAP_ADMIN_*` 仅在首次启动时生效，之后改 `.env` 不会改 admin 密码。
+生产模式（`start`，非 `start-dev`）：生成随机 admin 密码写入 `keycloak/.env`（gitignored），
+从 `postgres/.env` 读取数据库密码，在 server-postgres 中确保 `monitorerp_kc` 库存在，然后启动容器。
+首次启动从 `keycloak/realms/monitorerp.json` 导入 `monitorerp` realm（幂等：realm 已存在时跳过）。
+`.env` 已存在时不会重新生成；旧版 `.env` 缺少 `KC_DB_PASSWORD` 时会自动补上。
+
+控制台：https://keycloak.ai.monitorsystem.cn/admin（admin / 密码见 `keycloak/.env`）。
+注意 `KC_BOOTSTRAP_ADMIN_*` 仅在全新数据库首次启动时生效，之后改 `.env` 不会改 admin 密码。
+
+> 从旧 `start-dev`（内嵌 H2、无卷）升级会丢弃旧数据——这是有意的全新开始（fresh start）。
+> 详细操作手册（建用户、接入 KB 的 OIDC、密钥轮换、恢复流程）见 `keycloak/README.md`。
 ## KB 首次初始化（服务器上执行，交互式）
 
 ```bash

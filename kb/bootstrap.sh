@@ -93,6 +93,16 @@ RAGFLOW_DATASET_ID=$RAGFLOW_DATASET_ID
 RAGFLOW_AGENT_ID=$RAGFLOW_AGENT_ID
 POLL_INTERVAL_MS=$POLL_INTERVAL_MS
 PORT=$PORT
+
+# --- OIDC sign-in (Keycloak) — uncomment and fill in once the Keycloak realm
+#     is provisioned (see ../keycloak/README.md, section "Wire the KB app").
+#     All four or none — a partial set is a boot-time error. The client
+#     secret comes from the Keycloak console: Clients > monitorerp-kb >
+#     Credentials (each instance generates its own; keep it out of git).
+# OIDC_ISSUER_URL=https://keycloak.ai.monitorsystem.cn/realms/monitorerp
+# OIDC_CLIENT_ID=monitorerp-kb
+# OIDC_CLIENT_SECRET=<paste from the Keycloak console>
+# OIDC_REDIRECT_URI=https://kb.ai.monitorsystem.cn/api/auth/oidc/callback
 EOF
 chmod 600 "$ENV_FILE"
 echo "Created $ENV_FILE."

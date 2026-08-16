@@ -1,12 +1,55 @@
+# Keycloak identity provider (OIDC for MonitorERP-KB) — production mode.
+#
+# Notes (each verified empirically against the pinned 26.7.1 image):
+# - production `start` refuses to boot without HTTPS key material, so behind
+#   the TLS-terminating nginx this runs --http-enabled=true; issuer,
+#   redirects and all frontend URLs still come from KC_HOSTNAME (https).
+# - /health/ready answers 200 on the loopback port even with strict
+#   hostname, so the healthcheck, manage.sh and ship-keycloak-images.ps1
+#   probes work unchanged.
+# - --import-realm skips an existing realm (IGNORE_EXISTING strategy):
+#   realms/monitorerp.json is applied on first boot only, never clobbers
+#   console edits.
+# - the image ships no curl; the healthcheck uses bash /dev/tcp instead.
+#
+# Secrets (KC_BOOTSTRAP_ADMIN_*, KC_DB_PASSWORD) live in .env, created by
+# bootstrap.sh (gitignored). Everything else is static config, in git.
+#
+# Ports: 8080 inside the container, published on 127.0.0.1:8081 only — nginx
+# (server-nginx/global.conf) is the only route to Keycloak, proxying
+# keycloak.ai.monitorsystem.cn -> http://127.0.0.1:8081.
+
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.7.1
     container_name: keycloak
     restart: unless-stopped
     env_file: .env
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://server-postgres:5432/monitorerp_kc
+      - KC_DB_USERNAME=monitorerp
+      - KC_HOSTNAME=https://keycloak.ai.monitorsystem.cn
+    command: start --http-enabled=true --proxy-headers=xforwarded --import-realm --health-enabled=true --http-management-health-enabled=false
     ports:
       # 8080 is RAGFlow's web port (ragflow/.env SVR_WEB_HTTP_PORT) — use 8081
       - "127.0.0.1:8081:8080"
-    # health on the main interface (not the default management :9000 — host 9000
-    # is taken), so ship-keycloak-images.ps1 can probe 127.0.0.1:8081/health/ready
-    command: start-dev --proxy-headers=xforwarded --health-enabled=true --http-management-health-enabled=false
+    networks:
+      - shared
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - ./realms:/opt/keycloak/data/import:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 && printf \"GET /health/ready HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n\" >&3 && head -c 64 <&3 | grep -qi \"200 OK\"'"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  keycloak-data:
+
+networks:
+  shared:
+    external: true
+    name: monitorerp-shared
