@@ -73,6 +73,15 @@ of a fresh database).
 
 ## Create users (admin-provisioned)
 
+**Batch provisioning:** `./keycloak/create-users.sh` creates every user in
+`keycloak/data/monitorerp-internal-users.csv` (one email per line, committed
+manifest). It generates a policy-compliant temporary password per user and
+prints the handoff table — no SMTP, so that output IS the delivery. Run
+`--dry-run` first to see the exact plan. `--file path.csv` overrides the
+manifest. See the script header for the full contract.
+
+**Single users / one-off fixes** (console):
+
 1. Console → **monitorerp** realm → **Users** → **Add user**:
    - Username = the user's **email address** (email is the login identifier),
    - Email, First/Last name (optional),
