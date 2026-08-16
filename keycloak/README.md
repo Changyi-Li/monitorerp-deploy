@@ -37,7 +37,10 @@ Realm settings baked into the artifact (per the shared design):
 - Email is the login identifier (`registrationEmailAsUsername`, `loginWithEmailAllowed`); **no SMTP** — `resetPasswordAllowed: false`, `verifyEmail: false`. Password resets are admin-only (set a temporary password in the console).
 - **Moderate password policy**: ≥ 10 chars, ≥ 1 digit, ≥ 1 special, must not contain the username.
 - **Brute-force protection on**: 10 failures within 15 min → lockout, escalating waits (max 15 min).
-- **Long-lived SSO session**: idle 8 h, max 24 h; access token 5 min, refresh token 8 h. No Remember Me. The app's own 7-day `kb_session` cookie is the real session authority.
+- **Long-lived SSO session**: idle 8 h, max 24 h; access token 5 min;
+  refresh tokens stay valid for the SSO session lifetime (8 h idle). No
+  Remember Me. The app's own 7-day `kb_session` cookie is the real session
+  authority.
 - No Keycloak-side self-registration (the app's own sign-up remains the second door, per design).
 
 ## First-time provisioning (on the server)

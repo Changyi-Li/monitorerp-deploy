@@ -20,7 +20,6 @@
   "ssoSessionIdleTimeout": 28800,
   "ssoSessionMaxLifespan": 86400,
   "accessTokenLifespan": 300,
-  "refreshTokenLifespan": 28800,
   "clients": [
     {
       "clientId": "monitorerp-kb",
